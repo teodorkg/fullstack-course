@@ -49,7 +49,7 @@ const LoginPage = ({ setUser, users }) => {
 
   function isFormValid(username, password) {
     let hasErrors = false;
-    if (!username.match(/^[a-zA-Z0-9_]+$/) || username.length > 15) {
+    if (!/^[a-zA-Z0-9_]+$/.test(username) || username.length > 15) {
       setError((error) => {
         return { ...error, username: true };
       });

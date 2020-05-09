@@ -40,13 +40,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RegisterPage = ({ user, setUser, users, setUsers }) => {
+const RegisterPage = ({
+  user,
+  setUser,
+  users,
+  setUsers,
+  regUser,
+  setRegUser,
+}) => {
   const classes = useStyles();
   let history = useHistory();
 
-  const [regUser, setRegUser] = useState({
-    ...user,
-  });
   const [errors, setErrors] = useState({
     username: false,
     password: false,
@@ -64,18 +68,23 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     return 1 + parseInt(maxIndex);
   }
 
+  function isUsernameFree() {
+    return !users.find((user) => user.username === regUser.username);
+  }
+
   function isFormValid() {
     const {
-      username,
-      password,
-      sex,
-      isAdmin,
-      avatarSrc,
-      aboutme,
-      status,
+      username = "",
+      password = "",
+      sex = "",
+      isAdmin = false,
+      avatarSrc = "",
+      aboutme = "",
+      status = "",
     } = regUser;
     let hasErrors = false;
-    if (!username.match(/^[a-zA-Z0-9_]+$/) || username.length > 15) {
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username) || username.length > 15) {
       setErrors((errors) => {
         return { ...errors, username: true };
       });
@@ -87,9 +96,33 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
       });
       hasErrors = true;
     }
-    if (password.length < 8) {
+    if (!["male", "female", ""].includes(sex)) {
       setErrors((errors) => {
-        return { ...errors, password: true };
+        return { ...errors, sex: true };
+      });
+      hasErrors = true;
+    }
+    if (![true, false].includes(isAdmin)) {
+      setErrors((errors) => {
+        return { ...errors, isAdmin: true };
+      });
+      hasErrors = true;
+    }
+    if (avatarSrc.length > 250) {
+      setErrors((errors) => {
+        return { ...errors, avatarSrc: true };
+      });
+      hasErrors = true;
+    }
+    if (aboutme.length > 512) {
+      setErrors((errors) => {
+        return { ...errors, aboutme: true };
+      });
+      hasErrors = true;
+    }
+    if (!["active", "suspended", "deactivated"].includes(status)) {
+      setErrors((errors) => {
+        return { ...errors, status: true };
       });
       hasErrors = true;
     }
@@ -112,24 +145,36 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
       const now = new Date();
       const nowFormated = now.toLocaleString();
       if (regUser.id) {
-        setUser({ ...regUser, timeLastMod: nowFormated });
+        if (regUser.id === user.id) {
+          setUser({ ...regUser, timeLastMod: nowFormated });
+        }
         setRegUser({ ...regUser, timeLastMod: nowFormated });
-        setUsers((users) => {
-          return [...users, { ...regUser, timeLastMod: nowFormated }];
-        });
+        setUsers(
+          users.map((user) => {
+            return user.id === regUser.id
+              ? { ...regUser, timeLastMod: nowFormated }
+              : user;
+          })
+        );
       } else {
-        setUsers((users) => {
-          return [
-            ...users,
-            {
-              ...regUser,
-              id: findNextIndex(),
-              timeCreated: nowFormated,
-              timeLastMod: nowFormated,
-            },
-          ];
-        });
-        history.push("/login");
+        if (isUsernameFree()) {
+          setUsers((users) => {
+            return [
+              ...users,
+              {
+                ...regUser,
+                id: findNextIndex(),
+                timeCreated: nowFormated,
+                timeLastMod: nowFormated,
+              },
+            ];
+          });
+          history.push("/login");
+        } else {
+          setErrors((errors) => {
+            return { ...errors, username: true };
+          });
+        }
       }
     }
   }
@@ -158,7 +203,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         )}
         <TextField
           name="username"
-          value={regUser.username}
+          value={regUser.username || ""}
           error={errors.username}
           label="Username"
           helperText={
@@ -170,33 +215,34 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         />
         <TextField
           name="password"
-          value={regUser.password}
+          value={regUser.password || ""}
           type="password"
           error={errors.password}
-          label="Password"
           helperText={
             errors.password && "the password doesn't comply with the rules"
           }
+          label="Password"
           variant="outlined"
           onChange={handleChange}
           autoComplete="on"
           className="passwordField"
         />
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={regUser.isAdmin}
-              onChange={handleChange}
-              name="isAdmin"
-              color="primary"
-            />
-          }
-          label="Admin"
-        />
+        <FormControl error={errors.isAdmin}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={regUser.isAdmin || false}
+                onChange={handleChange}
+                name="isAdmin"
+                color="primary"
+              />
+            }
+            label="Admin"
+          />
+        </FormControl>
         <TextField
           name="nickname"
-          value={regUser.nickname}
-          error={errors.nickname}
+          value={regUser.nickname || ""}
           label="Nickname"
           variant="outlined"
           onChange={handleChange}
@@ -206,9 +252,10 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
           <Select
             labelId="sex"
             name="sex"
-            value={regUser.sex}
+            value={regUser.sex || ""}
             onChange={handleChange}
             label="Sex"
+            error={errors.sex}
           >
             <MenuItem value="">
               <em>None</em>
@@ -219,30 +266,35 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         </FormControl>
         <TextField
           name="avatarSrc"
-          value={regUser.avatarSrc}
-          error={errors.avatarSrc}
+          value={regUser.avatarSrc || ""}
           label="Avatar url"
           variant="outlined"
           onChange={handleChange}
+          error={errors.avatarSrc}
+          helperText={
+            errors.avatarSrc && "avatar url must be less then 250 chars"
+          }
         />
         <TextField
           name="aboutme"
-          value={regUser.aboutme}
-          error={errors.aboutme}
+          value={regUser.aboutme || ""}
           label="About me"
           variant="outlined"
           onChange={handleChange}
           multiline
           rows="4"
+          error={errors.aboutme}
+          helperText={errors.aboutme && "about me can be up to 512 chars"}
         />
         <FormControl variant="outlined">
           <InputLabel id="status">Status</InputLabel>
           <Select
             labelId="status"
             name="status"
-            value={regUser.status}
+            value={regUser.status || ""}
             onChange={handleChange}
             label="Status"
+            error={errors.status}
           >
             <MenuItem value="active">Active</MenuItem>
             <MenuItem value="suspended">Suspended</MenuItem>

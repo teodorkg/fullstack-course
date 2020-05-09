@@ -5,10 +5,10 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Link from "@material-ui/core/Link";
+import Avatar from "@material-ui/core/Avatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
       display: "flex",
       justifyContent: "space-between",
     },
+    "& .active": {
+      textDecoration: "underline",
+    },
   },
   menu: {
     display: "flex",
@@ -30,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar({ user, setUser }) {
+export default function MenuAppBar({ user, setUser, setRegUser }) {
   const classes = useStyles();
   let history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -43,6 +46,15 @@ export default function MenuAppBar({ user, setUser }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const [active, setActive] = React.useState(
+    history.location.pathname.split("/")[1]
+  );
+
+  React.useEffect(() => {
+    setActive(history.location.pathname.split("/")[1]);
+  }, [history.location]);
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -56,6 +68,7 @@ export default function MenuAppBar({ user, setUser }) {
                     event.preventDefault();
                     history.push("/recipe");
                   }}
+                  className={active === "recipe" ? "active" : ""}
                 >
                   Add recipe
                 </Link>
@@ -69,6 +82,7 @@ export default function MenuAppBar({ user, setUser }) {
                   event.preventDefault();
                   history.push("/recipes");
                 }}
+                className={active === "recipes" ? "active" : ""}
               >
                 Recipes
               </Link>
@@ -82,6 +96,7 @@ export default function MenuAppBar({ user, setUser }) {
                     event.preventDefault();
                     history.push("/login");
                   }}
+                  className={active === "login" ? "active" : ""}
                 >
                   Login
                 </Link>
@@ -96,6 +111,7 @@ export default function MenuAppBar({ user, setUser }) {
                     event.preventDefault();
                     history.push("/register");
                   }}
+                  className={active === "register" ? "active" : ""}
                 >
                   Register
                 </Link>
@@ -111,7 +127,30 @@ export default function MenuAppBar({ user, setUser }) {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <AccountCircle />
+                {user.avatarSrc && (
+                  <Avatar alt="user avatar" src={user.avatarSrc} />
+                )}
+                {!user.avatarSrc && user.sex === "male" && (
+                  <Avatar
+                    id="invertAvatar"
+                    alt="user avatar"
+                    src="https://www.shareicon.net/data/128x128/2015/12/03/681501_image_512x512.png"
+                  />
+                )}
+                {!user.avatarSrc && user.sex === "female" && (
+                  <Avatar
+                    id="invertAvatar"
+                    alt="user avatar"
+                    src="https://www.shareicon.net/data/128x128/2015/12/03/681480_image_512x512.png"
+                  />
+                )}
+                {!user.avatarSrc && user.sex === "" && (
+                  <Avatar
+                    id="invertAvatar"
+                    alt="user avatar"
+                    src="https://www.shareicon.net/data/128x128/2015/12/09/684979_man_512x512.png"
+                  />
+                )}
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -131,6 +170,7 @@ export default function MenuAppBar({ user, setUser }) {
                 <MenuItem
                   onClick={() => {
                     handleClose();
+                    setRegUser({ ...user });
                     history.push("/register");
                   }}
                 >
@@ -145,6 +185,17 @@ export default function MenuAppBar({ user, setUser }) {
                 >
                   Log out
                 </MenuItem>
+                {user.isAdmin && (
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      history.push("/users");
+                    }}
+                    id={"manage-users-menu"}
+                  >
+                    Manage users
+                  </MenuItem>
+                )}
               </Menu>
             </div>
           )}

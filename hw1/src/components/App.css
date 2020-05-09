@@ -12,3 +12,11 @@ div > form > .passwordField {
   letter-spacing: 0.0075em;
   color: #262f66;
 }
+
+#manage-users-menu {
+  color: darkred;
+}
+
+#invertAvatar {
+  filter: invert(100%);
+}
