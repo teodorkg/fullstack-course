@@ -120,7 +120,7 @@ const RegisterPage = ({
       });
       hasErrors = true;
     }
-    if (!["active", "suspended", "deactivated"].includes(status)) {
+    if (!["active", "suspended", "disabled"].includes(status)) {
       setErrors((errors) => {
         return { ...errors, status: true };
       });

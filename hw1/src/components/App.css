@@ -17,6 +17,6 @@ div > form > .passwordField {
   color: darkred;
 }
 
-#invertAvatar {
+.invertAvatar {
   filter: invert(100%);
 }

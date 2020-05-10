@@ -8,7 +8,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import Link from "@material-ui/core/Link";
-import Avatar from "@material-ui/core/Avatar";
+import UserAvatar from "./UserAvatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -127,30 +127,12 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                 onClick={handleMenu}
                 color="inherit"
               >
-                {user.avatarSrc && (
-                  <Avatar alt="user avatar" src={user.avatarSrc} />
-                )}
-                {!user.avatarSrc && user.sex === "male" && (
-                  <Avatar
-                    id="invertAvatar"
-                    alt="user avatar"
-                    src="https://www.shareicon.net/data/128x128/2015/12/03/681501_image_512x512.png"
-                  />
-                )}
-                {!user.avatarSrc && user.sex === "female" && (
-                  <Avatar
-                    id="invertAvatar"
-                    alt="user avatar"
-                    src="https://www.shareicon.net/data/128x128/2015/12/03/681480_image_512x512.png"
-                  />
-                )}
-                {!user.avatarSrc && user.sex === "" && (
-                  <Avatar
-                    id="invertAvatar"
-                    alt="user avatar"
-                    src="https://www.shareicon.net/data/128x128/2015/12/09/684979_man_512x512.png"
-                  />
-                )}
+                <UserAvatar
+                  nickname={user.nickname || user.username}
+                  avatarSrc={user.avatarSrc}
+                  sex={user.sex}
+                  invert={true}
+                />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -180,6 +162,7 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                   onClick={() => {
                     handleClose();
                     setUser({ username: "" });
+                    setRegUser({ username: "" });
                     history.push("/");
                   }}
                 >
