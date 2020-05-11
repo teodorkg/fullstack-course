@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 import "./App.css";
 import { Switch, Route } from "react-router-dom";
-import mockData from "./mockData";
+import mockData from "./common/mockData";
 import { makeStyles } from "@material-ui/core/styles";
 
 import LoginPage from "./LoginPage";
-import RegisterPage from "./RegisterPage";
+import RegisterPage from "./User/RegisterPage";
 import HomePage from "./HomePage";
-import RecipesPage from "./RecipesPage";
-//import AddRecipePage from "./AddRecipePage"
-//import ManageRecipessPage from "./ManageRecipesPage";
+import RecipesPage from "./Recipes/RecipesPage";
 import PageNotFound from "./PageNotFound";
-import Header from "./Header";
-import UsersPage from "./UsersPage";
-import AddRecipePage from "./AddRecipePage";
+import Header from "./common/Header";
+import UsersPage from "./Users/UsersPage";
+import AddRecipePage from "./Recipe/AddRecipePage";
 import ManageRecipesPage from "./ManageRecipesPage";
 
 const useStyles = makeStyles((theme) => ({

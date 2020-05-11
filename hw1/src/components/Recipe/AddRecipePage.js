@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import AddRecipeMainForm from "./AddRecipeMainForm";
 import AddRecipeIngredients from "./AddRecipeIngredients";
 import Button from "@material-ui/core/Button";
+import { recipeConstants } from "../common/magicConstants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +42,16 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
   const classes = useStyles();
   let { id = "" } = useParams();
   let history = useHistory();
+
+  const {
+    MAX_TITLE_LEN,
+    MAX_SHORT_DESCRIP_LEN,
+    MAX_DESCRIP_LEN,
+    MAX_MINUTES,
+    MAX_PICTURE_SRC_LEN,
+    MAX_TAGS_LEN,
+    MAX_INGREDIENT_LEN,
+  } = recipeConstants;
 
   const [recipeToAdd, setRecipeToAdd] = useState({
     id: "",
@@ -112,31 +123,31 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     } = recipeToAdd;
     let hasErrors = false;
 
-    if (title.length > 80) {
+    if (title.length > MAX_TITLE_LEN) {
       setErrors((errors) => {
         return { ...errors, title: true };
       });
       hasErrors = true;
     }
-    if (shortDescription.length > 256) {
+    if (shortDescription.length > MAX_SHORT_DESCRIP_LEN) {
       setErrors((errors) => {
         return { ...errors, shortDescription: true };
       });
       hasErrors = true;
     }
-    if (pictureSrc === "" || pictureSrc.length > 250) {
+    if (pictureSrc === "" || pictureSrc.length > MAX_PICTURE_SRC_LEN) {
       setErrors((errors) => {
         return { ...errors, pictureSrc: true };
       });
       hasErrors = true;
     }
-    if (description.length > 2048) {
+    if (description.length > MAX_DESCRIP_LEN) {
       setErrors((errors) => {
         return { ...errors, description: true };
       });
       hasErrors = true;
     }
-    if (tags.length > 200) {
+    if (tags.length > MAX_TAGS_LEN) {
       setErrors((errors) => {
         return { ...errors, tags: true };
       });
@@ -144,7 +155,7 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     }
 
     const minutes = parseInt(minutesNeeded);
-    if (!minutes || minutes < 0 || minutes > 600) {
+    if (!minutes || minutes < 0 || minutes > MAX_MINUTES) {
       setErrors((errors) => {
         return { ...errors, minutesNeeded: true };
       });
@@ -152,7 +163,10 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     }
 
     for (const ingredient in ingredients) {
-      if (ingredient.length > 30 || ingredients[ingredient].length > 10) {
+      if (
+        ingredient.length > MAX_INGREDIENT_LEN ||
+        ingredients[ingredient].length > MAX_INGREDIENT_LEN
+      ) {
         setErrors((errors) => {
           return {
             ...errors,

@@ -1,0 +1,17 @@
+export const userConstants = {
+  MAX_ID_LEN: 24,
+  MAX_USERNAME_LEN: 15,
+  MIN_PASSWORD_LEN: 8,
+  MAX_ABOUTME_LEN: 512,
+  MAX_AVATAR_SRC_LEN: 256,
+};
+
+export const recipeConstants = {
+  MAX_TITLE_LEN: 80,
+  MAX_SHORT_DESCRIP_LEN: 256,
+  MAX_DESCRIP_LEN: 2048,
+  MAX_PICTURE_SRC_LEN: 256,
+  MAX_TAGS_LEN: 256,
+  MAX_MINUTES: 600,
+  MAX_INGREDIENT_LEN: 30,
+};

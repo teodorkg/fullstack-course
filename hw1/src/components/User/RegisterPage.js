@@ -9,6 +9,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
+import { userConstants } from "../common/magicConstants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +45,13 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
   const classes = useStyles();
   let history = useHistory();
   let { id = "" } = useParams();
+
+  const {
+    MAX_USERNAME_LEN,
+    MIN_PASSWORD_LEN,
+    MAX_ABOUTME_LEN,
+    MAX_AVATAR_SRC_LEN,
+  } = userConstants;
 
   const [userToReg, setUserToReg] = useState({
     id: "",
@@ -111,13 +119,16 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     } = userToReg;
     let hasErrors = false;
 
-    if (!/^[a-zA-Z0-9_]+$/.test(username) || username.length > 15) {
+    if (
+      !/^[a-zA-Z0-9_]+$/.test(username) ||
+      username.length > MAX_USERNAME_LEN
+    ) {
       setErrors((errors) => {
         return { ...errors, username: true };
       });
       hasErrors = true;
     }
-    if (password.length < 8) {
+    if (password.length < MIN_PASSWORD_LEN) {
       setErrors((errors) => {
         return { ...errors, password: true };
       });
@@ -135,13 +146,13 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
       });
       hasErrors = true;
     }
-    if (avatarSrc.length > 250) {
+    if (avatarSrc.length > MAX_AVATAR_SRC_LEN) {
       setErrors((errors) => {
         return { ...errors, avatarSrc: true };
       });
       hasErrors = true;
     }
-    if (aboutme.length > 512) {
+    if (aboutme.length > MAX_ABOUTME_LEN) {
       setErrors((errors) => {
         return { ...errors, aboutme: true };
       });

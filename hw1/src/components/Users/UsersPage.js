@@ -8,7 +8,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Button from "@material-ui/core/Button";
 
-import UserAvatar from "./UserAvatar";
+import UserAvatar from "../common/UserAvatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
