@@ -109,9 +109,9 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                   href="#"
                   onClick={(event) => {
                     event.preventDefault();
-                    history.push("/register");
+                    history.push("/user");
                   }}
-                  className={active === "register" ? "active" : ""}
+                  className={active === "user" ? "active" : ""}
                 >
                   Register
                 </Link>
@@ -153,7 +153,7 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                   onClick={() => {
                     handleClose();
                     setRegUser({ ...user });
-                    history.push("/register");
+                    history.push("/user");
                   }}
                 >
                   Modify

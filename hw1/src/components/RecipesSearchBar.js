@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MultilineTextFields({ setRecipes, lastRecipes }) {
+export default function RecipeSearchBar({ setRecipes, lastRecipes }) {
   const classes = useStyles();
   const [value, setValue] = React.useState("");
 

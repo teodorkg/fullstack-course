@@ -34,7 +34,7 @@ export default function UsersPage({
     setRegUser((regUser) => {
       return { ...regUser, ...user };
     });
-    history.push("/register");
+    history.push("/user");
   }
 
   function handleDelete(id) {

@@ -61,7 +61,12 @@ export default {
       title: "Meat balls", // max 80
       shortDescription: "Fancy minced meat fried in round shape", // max 256
       minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
+      ingredients: {
+        "minced meat": "1kg",
+        onion: "250gr",
+        "sunflower oil": "150ml",
+        flour: "100gr",
+      },
       pictureSrc:
         "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
       description:
@@ -76,7 +81,12 @@ export default {
       title: "Meat balls", // max 80
       shortDescription: "Fancy minced meat fried in round shape", // max 256
       minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
+      ingredients: {
+        "minced meat": "1kg",
+        onion: "250gr",
+        "sunflower oil": "150ml",
+        flour: "100gr",
+      },
       pictureSrc:
         "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
       description:
@@ -91,7 +101,12 @@ export default {
       title: "Meat balls", // max 80
       shortDescription: "Fancy minced meat fried in round shape", // max 256
       minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
+      ingredients: {
+        "minced meat": "1kg",
+        onion: "250gr",
+        "sunflower oil": "150ml",
+        flour: "100gr",
+      },
       pictureSrc:
         "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
       description:
@@ -106,7 +121,12 @@ export default {
       title: "Spaghetti", // max 80
       shortDescription: "spahetti", // max 256
       minutesNeeded: "20",
-      ingredients: ["minced meat", "spaghetti", "olive oil", "cheese"],
+      ingredients: {
+        "minced meat": "300gr",
+        spaghetti: "1 pack",
+        "olive oil": "40ml",
+        cheese: "170gr",
+      },
       pictureSrc:
         "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/homemade-spaghetti-sauce-horizontal-1530890913.jpg?crop=1xw:1xh;center,top&resize=980:*", // required
       description:
@@ -114,141 +134,6 @@ export default {
       tags: "spaghetti",
       timeCreated: "5/11/2020, 12:52:09 AM",
       timeLastMod: "5/11/2020, 12:52:09 AM",
-    },
-    {
-      id: "4",
-      creatorId: "0",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "5",
-      creatorId: "3",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "6",
-      creatorId: "2",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "7",
-      creatorId: "2",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "8",
-      creatorId: "3",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "9",
-      creatorId: "1",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "10",
-      creatorId: "0",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "11",
-      creatorId: "1",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
-    },
-    {
-      id: "12",
-      creatorId: "3",
-      title: "Meat balls", // max 80
-      shortDescription: "Fancy minced meat fried in round shape", // max 256
-      minutesNeeded: "20",
-      ingredients: ["minced meat", "onion", "sunflower oil", "flour"],
-      pictureSrc:
-        "https://sweetandsavorymeals.com/wp-content/uploads/2019/02/Homemade-Meatballs-2-680x1020.jpg", // required
-      description:
-        "Mix the minced meat with the cutted onion. Divide the mix into parts of 70-100 grams. Round the chunks into spherical shape and roll them in flour. Put in the frying oil for 50 seconds on each side", // max 2048
-      tags: "meat minced_meat meat_balls fry",
-      timeCreated: "5/10/2020, 12:52:09 AM",
-      timeLastMod: "5/10/2020, 12:52:09 AM",
     },
   ],
 };
