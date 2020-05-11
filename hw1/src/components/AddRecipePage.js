@@ -56,7 +56,7 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     timeLastMod: "",
   });
 
-  if (id && !recipeToAdd.id) {
+  if (id && recipeToAdd.id !== id) {
     setRecipeToAdd({
       ...recipeToAdd,
       ...recipes.find((recipe) => recipe.id === id),

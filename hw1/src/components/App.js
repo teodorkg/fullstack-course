@@ -32,22 +32,12 @@ function App() {
   });
 
   const [users, setUsers] = useState(mockData.users);
-  const [regUser, setRegUser] = useState({
-    username: "",
-    password: "",
-    sex: "",
-    isAdmin: false,
-    nickname: "",
-    avatarSrc: "",
-    aboutme: "",
-    status: "",
-    ...user,
-  });
+
   const [recipes, setRecipes] = useState(mockData.recipes);
 
   return (
     <div>
-      <Header user={user} setUser={setUser} setRegUser={setRegUser} />
+      <Header user={user} setUser={setUser} />
       <div className={classes.root}>
         <Switch>
           <Route exact path="/">
@@ -56,14 +46,20 @@ function App() {
           <Route path="/login">
             <LoginPage setUser={setUser} users={users} />
           </Route>
+          <Route path="/user/:id">
+            <RegisterPage
+              user={user}
+              setUser={setUser}
+              users={users}
+              setUsers={setUsers}
+            />
+          </Route>
           <Route path="/user">
             <RegisterPage
               user={user}
               setUser={setUser}
               users={users}
               setUsers={setUsers}
-              regUser={regUser}
-              setRegUser={setRegUser}
             />
           </Route>
           <Route path="/users">
@@ -71,7 +67,6 @@ function App() {
               userLoggedId={user.id}
               users={users}
               setUsers={setUsers}
-              setRegUser={setRegUser}
             />
           </Route>
 

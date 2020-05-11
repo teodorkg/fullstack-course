@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar({ user, setUser, setRegUser }) {
+export default function MenuAppBar({ user, setUser }) {
   const classes = useStyles();
   let history = useHistory();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -155,8 +155,7 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    setRegUser({ ...user });
-                    history.push("/user");
+                    history.push("/user/" + user.id);
                   }}
                 >
                   Modify
@@ -165,7 +164,6 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                   onClick={() => {
                     handleClose();
                     setUser({ username: "" });
-                    setRegUser({ username: "" });
                     history.push("/");
                   }}
                 >

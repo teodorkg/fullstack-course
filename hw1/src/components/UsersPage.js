@@ -21,20 +21,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UsersPage({
-  userLoggedId,
-  users,
-  setUsers,
-  setRegUser,
-}) {
+export default function UsersPage({ userLoggedId, users, setUsers }) {
   const classes = useStyles();
   let history = useHistory();
 
-  function handleModify(user) {
-    setRegUser((regUser) => {
-      return { ...regUser, ...user };
-    });
-    history.push("/user");
+  function handleModify(userId) {
+    history.push("/user/" + userId);
   }
 
   function handleDelete(id) {
@@ -61,7 +53,7 @@ export default function UsersPage({
               <Button
                 className="button-users"
                 variant="outlined"
-                onClick={() => handleModify(user)}
+                onClick={() => handleModify(user.id)}
               >
                 Modify
               </Button>

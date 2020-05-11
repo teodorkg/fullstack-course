@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -40,17 +40,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RegisterPage = ({
-  user,
-  setUser,
-  users,
-  setUsers,
-  regUser,
-  setRegUser,
-}) => {
+const RegisterPage = ({ user, setUser, users, setUsers }) => {
   const classes = useStyles();
   let history = useHistory();
+  let { id } = useParams();
 
+  const [regUser, setRegUser] = useState({
+    id: "",
+    username: "",
+    password: "",
+    sex: "",
+    isAdmin: false,
+    nickname: "",
+    avatarSrc: "",
+    aboutme: "",
+    status: "",
+  });
+
+  if (id && regUser.id !== id) {
+    setRegUser({
+      ...regUser,
+      ...users.find((user) => user.id === id),
+    });
+  }
   const [errors, setErrors] = useState({
     username: false,
     password: false,
