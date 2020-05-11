@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddRecipePage({ userId, recipes, setRecipes }) {
   const classes = useStyles();
-  let { id } = useParams();
+  let { id = "" } = useParams();
   let history = useHistory();
 
   const [recipeToAdd, setRecipeToAdd] = useState({
@@ -56,11 +56,27 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     timeLastMod: "",
   });
 
-  if (id && recipeToAdd.id !== id) {
-    setRecipeToAdd({
-      ...recipeToAdd,
-      ...recipes.find((recipe) => recipe.id === id),
-    });
+  if (recipeToAdd.id !== id) {
+    setRecipeToAdd(
+      id
+        ? {
+            ...recipeToAdd,
+            ...recipes.find((recipe) => recipe.id === id),
+          }
+        : {
+            id: "",
+            creatorId: "",
+            title: "",
+            shortDescription: "",
+            minutesNeeded: "",
+            ingredients: {},
+            pictureSrc: "",
+            description: "",
+            tags: "",
+            timeCreated: "",
+            timeLastMod: "",
+          }
+    );
   }
 
   const [errors, setErrors] = useState({
@@ -77,7 +93,7 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     const maxIndex = recipes
       .map((recipe) => recipe.id)
       .reduce((prevId, nextId) => (prevId < nextId ? nextId : prevId));
-    return 1 + parseInt(maxIndex);
+    return (1 + parseInt(maxIndex)).toString();
   }
 
   function isTitleFree() {

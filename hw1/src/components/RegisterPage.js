@@ -43,9 +43,9 @@ const useStyles = makeStyles((theme) => ({
 const RegisterPage = ({ user, setUser, users, setUsers }) => {
   const classes = useStyles();
   let history = useHistory();
-  let { id } = useParams();
+  let { id = "" } = useParams();
 
-  const [regUser, setRegUser] = useState({
+  const [userToReg, setUserToReg] = useState({
     id: "",
     username: "",
     password: "",
@@ -57,12 +57,27 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     status: "",
   });
 
-  if (id && regUser.id !== id) {
-    setRegUser({
-      ...regUser,
-      ...users.find((user) => user.id === id),
-    });
+  if (userToReg.id !== id) {
+    setUserToReg(
+      id
+        ? {
+            ...userToReg,
+            ...users.find((user) => user.id === id),
+          }
+        : {
+            id: "",
+            username: "",
+            password: "",
+            sex: "",
+            isAdmin: false,
+            nickname: "",
+            avatarSrc: "",
+            aboutme: "",
+            status: "",
+          }
+    );
   }
+
   const [errors, setErrors] = useState({
     username: false,
     password: false,
@@ -77,11 +92,11 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     const maxIndex = users
       .map((user) => user.id)
       .reduce((prevId, nextId) => (prevId < nextId ? nextId : prevId));
-    return 1 + parseInt(maxIndex);
+    return (1 + parseInt(maxIndex)).toString();
   }
 
   function isUsernameFree() {
-    return !users.find((user) => user.username === regUser.username);
+    return !users.find((user) => user.username === userToReg.username);
   }
 
   function isFormValid() {
@@ -93,7 +108,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
       avatarSrc = "",
       aboutme = "",
       status = "",
-    } = regUser;
+    } = userToReg;
     let hasErrors = false;
 
     if (!/^[a-zA-Z0-9_]+$/.test(username) || username.length > 15) {
@@ -156,15 +171,15 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     if (isFormValid()) {
       const now = new Date();
       const nowFormated = now.toLocaleString();
-      if (regUser.id) {
-        if (regUser.id === user.id) {
-          setUser({ ...regUser, timeLastMod: nowFormated });
+      if (userToReg.id) {
+        if (userToReg.id === user.id) {
+          setUser({ ...userToReg, timeLastMod: nowFormated });
         }
-        setRegUser({ ...regUser, timeLastMod: nowFormated });
+        setUserToReg({ ...userToReg, timeLastMod: nowFormated });
         setUsers(
           users.map((user) => {
-            return user.id === regUser.id
-              ? { ...regUser, timeLastMod: nowFormated }
+            return user.id === userToReg.id
+              ? { ...userToReg, timeLastMod: nowFormated }
               : user;
           })
         );
@@ -174,7 +189,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
             return [
               ...users,
               {
-                ...regUser,
+                ...userToReg,
                 id: findNextIndex(),
                 timeCreated: nowFormated,
                 timeLastMod: nowFormated,
@@ -193,9 +208,9 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
 
   function handleChange({ target }) {
     const value = target.type === "checkbox" ? target.checked : target.value;
-    setRegUser((regUser) => {
+    setUserToReg((userToReg) => {
       return {
-        ...regUser,
+        ...userToReg,
         [target.name]: value,
       };
     });
@@ -204,10 +219,10 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
   return (
     <div className={classes.root}>
       <form onSubmit={handleSubmit}>
-        {regUser.id && (
+        {userToReg.id && (
           <TextField
             name="id"
-            value={regUser.id}
+            value={userToReg.id}
             label="ID"
             variant="outlined"
             disabled
@@ -215,7 +230,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         )}
         <TextField
           name="username"
-          value={regUser.username || ""}
+          value={userToReg.username || ""}
           error={errors.username}
           label="Username"
           helperText={
@@ -227,7 +242,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         />
         <TextField
           name="password"
-          value={regUser.password || ""}
+          value={userToReg.password || ""}
           type="password"
           error={errors.password}
           helperText={
@@ -243,7 +258,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={regUser.isAdmin || false}
+                checked={userToReg.isAdmin || false}
                 onChange={handleChange}
                 name="isAdmin"
                 color="primary"
@@ -254,7 +269,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         </FormControl>
         <TextField
           name="nickname"
-          value={regUser.nickname || ""}
+          value={userToReg.nickname || ""}
           label="Nickname"
           variant="outlined"
           onChange={handleChange}
@@ -264,7 +279,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
           <Select
             labelId="sex"
             name="sex"
-            value={regUser.sex || ""}
+            value={userToReg.sex || ""}
             onChange={handleChange}
             label="Sex"
             error={errors.sex}
@@ -278,7 +293,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         </FormControl>
         <TextField
           name="avatarSrc"
-          value={regUser.avatarSrc || ""}
+          value={userToReg.avatarSrc || ""}
           label="Avatar url"
           variant="outlined"
           onChange={handleChange}
@@ -289,7 +304,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
         />
         <TextField
           name="aboutme"
-          value={regUser.aboutme || ""}
+          value={userToReg.aboutme || ""}
           label="About me"
           variant="outlined"
           onChange={handleChange}
@@ -303,7 +318,7 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
           <Select
             labelId="status"
             name="status"
-            value={regUser.status || ""}
+            value={userToReg.status || ""}
             onChange={handleChange}
             label="Status"
             error={errors.status}
@@ -313,24 +328,24 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
             <MenuItem value="disabled">Disabled</MenuItem>
           </Select>
         </FormControl>
-        {regUser.id && (
+        {userToReg.id && (
           <TextField
-            value={regUser.timeLastMod}
+            value={userToReg.timeLastMod}
             label="Date last modification"
             variant="outlined"
             disabled
           />
         )}
-        {regUser.id && (
+        {userToReg.id && (
           <TextField
-            value={regUser.timeCreated}
+            value={userToReg.timeCreated}
             label="Date created"
             variant="outlined"
             disabled
           />
         )}
         <Button type="submit" variant="contained" color="primary">
-          {regUser.id ? "Modify" : "Register"}
+          {userToReg.id ? "Modify" : "Register"}
         </Button>
       </form>
     </div>
