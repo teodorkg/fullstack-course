@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddRecipePage({ recipes, setRecipes }) {
+export default function AddRecipePage({ userId, recipes, setRecipes }) {
   const classes = useStyles();
   let { id } = useParams();
   let history = useHistory();
@@ -165,6 +165,7 @@ export default function AddRecipePage({ recipes, setRecipes }) {
       const now = new Date();
       const nowFormated = now.toLocaleString();
       if (recipeToAdd.id) {
+        setRecipeToAdd({ ...recipeToAdd, timeLastMod: nowFormated });
         setRecipes((recipes) =>
           recipes.map((recipe) => {
             return recipe.id === recipeToAdd.id
@@ -180,6 +181,7 @@ export default function AddRecipePage({ recipes, setRecipes }) {
               {
                 ...recipeToAdd,
                 id: findNextIndex(),
+                creatorId: userId,
                 timeCreated: nowFormated,
                 timeLastMod: nowFormated,
               },

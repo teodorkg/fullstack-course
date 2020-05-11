@@ -73,7 +73,8 @@ export default function AddRecipeIngredients({
                 <IconButton
                   title="delete ingredient"
                   color="primary"
-                  onClick={() =>
+                  onClick={(event) => {
+                    event.preventDefault();
                     setRecipeToAdd((recipeToAdd) => {
                       let newIngredients = { ...recipeToAdd.ingredients };
                       delete newIngredients[ingredient];
@@ -81,8 +82,8 @@ export default function AddRecipeIngredients({
                         ...recipeToAdd,
                         ingredients: { ...newIngredients },
                       };
-                    })
-                  }
+                    });
+                  }}
                 >
                   <DeleteOutlineIcon />
                 </IconButton>
@@ -104,7 +105,8 @@ export default function AddRecipeIngredients({
           title="add ingredient"
           color="primary"
           type="submit"
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
             if (addIngredient) {
               setRecipeToAdd((recipeToAdd) => {
                 return {

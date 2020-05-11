@@ -14,6 +14,7 @@ import PageNotFound from "./PageNotFound";
 import Header from "./Header";
 import UsersPage from "./UsersPage";
 import AddRecipePage from "./AddRecipePage";
+import ManageRecipesPage from "./ManageRecipesPage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -91,7 +92,14 @@ function App() {
             <AddRecipePage recipes={recipes} setRecipes={setRecipes} />
           </Route>
           <Route path="/recipe">
-            <AddRecipePage recipes={recipes} setRecipes={setRecipes} />
+            <AddRecipePage
+              userId={user.id || ""}
+              recipes={recipes}
+              setRecipes={setRecipes}
+            />
+          </Route>
+          <Route path="/manage-recipes">
+            <ManageRecipesPage recipes={recipes} setRecipes={setRecipes} />
           </Route>
           <Route component={PageNotFound} />
         </Switch>

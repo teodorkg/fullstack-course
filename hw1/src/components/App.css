@@ -13,7 +13,7 @@ div > form > .passwordField {
   color: #262f66;
 }
 
-#manage-users-menu {
+ul > .manage-menu {
   color: darkred;
 }
 

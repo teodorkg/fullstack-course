@@ -19,13 +19,22 @@ export default function AddRecipeMainForm({
   return (
     <>
       {recipeToAdd.id && (
-        <TextField
-          name="id"
-          value={recipeToAdd.id}
-          label="ID"
-          variant="outlined"
-          disabled
-        />
+        <>
+          <TextField
+            name="id"
+            value={recipeToAdd.id}
+            label="ID"
+            variant="outlined"
+            disabled
+          />
+          <TextField
+            name="creatorId"
+            value={recipeToAdd.creatorId}
+            label="Creator ID"
+            variant="outlined"
+            disabled
+          />
+        </>
       )}
       <TextField
         name="title"

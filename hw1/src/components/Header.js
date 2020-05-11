@@ -52,7 +52,10 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
   );
 
   React.useEffect(() => {
-    setActive(history.location.pathname.split("/")[1]);
+    const splitted = history.location.pathname.split("/");
+    if (!splitted[2]) {
+      setActive(splitted[1]);
+    }
   }, [history.location]);
 
   return (
@@ -174,9 +177,20 @@ export default function MenuAppBar({ user, setUser, setRegUser }) {
                       handleClose();
                       history.push("/users");
                     }}
-                    id={"manage-users-menu"}
+                    className={"manage-menu"}
                   >
                     Manage users
+                  </MenuItem>
+                )}
+                {user.isAdmin && (
+                  <MenuItem
+                    onClick={() => {
+                      handleClose();
+                      history.push("/manage-recipes");
+                    }}
+                    className={"manage-menu"}
+                  >
+                    Manage recipes
                   </MenuItem>
                 )}
               </Menu>
