@@ -12,6 +12,7 @@ import Header from "./common/Header";
 import UsersPage from "./Users/UsersPage";
 import AddRecipePage from "./Recipe/AddRecipePage";
 import ManageRecipesPage from "./ManageRecipesPage";
+import ChangePasswordPage from "./ChangePasswordPage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,25 +25,24 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const [user, setUser] = useState({
-    username: "",
-  });
+  const [user, setUser] = useState({ username: "" });
 
   const [users, setUsers] = useState([]);
 
   const [recipes, setRecipes] = useState([]);
 
-  const localUserString = window.localStorage.getItem("user");
+  const localUserString = localStorage.getItem("user");
 
   useEffect(() => {
     if (localUserString) {
       const localUser = JSON.parse(localUserString);
-      fetch("http://localhost:3001/users/" + localUser.id, {
+      if (localUser.expiry < Date.now()) return localStorage.removeItem("user");
+      fetch("http://localhost:3001/users/" + localUser.user.id, {
         method: "GET",
       })
         .then((response) => response.json())
         .then((result) => {
-          setUser({ ...result, token: localUser.token });
+          setUser({ ...result, token: localUser.user.token });
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -136,6 +136,9 @@ function App() {
           </Route>
           <Route path="/manage-recipes">
             <ManageRecipesPage recipes={recipes} setRecipes={setRecipes} />
+          </Route>
+          <Route path="/change-password">
+            <ChangePasswordPage user={user} setUser={setUser} />
           </Route>
           <Route component={PageNotFound} />
         </Switch>

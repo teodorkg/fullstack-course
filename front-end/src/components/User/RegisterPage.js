@@ -154,8 +154,8 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     }
     if (
       !userToReg.id &&
-      !password.match(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/.test(
+        password
       )
     ) {
       setErrors((errors) => {

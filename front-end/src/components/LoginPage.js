@@ -83,7 +83,10 @@ const LoginPage = ({ setUser, users }) => {
         .then((result) => {
           const user = { ...foundUser, token: result.token };
           setUser(user);
-          window.localStorage.setItem("user", JSON.stringify(user));
+          window.localStorage.setItem(
+            "user",
+            JSON.stringify({ user, expiry: Date.now() + 1000 * 60 * 60 })
+          );
           history.replace("/");
         })
         .catch((err) => {

@@ -163,6 +163,14 @@ export default function MenuAppBar({ user, setUser }) {
                 <MenuItem
                   onClick={() => {
                     handleClose();
+                    history.push("/change-password");
+                  }}
+                >
+                  Change password
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
                     setUser({ username: "" });
                     localStorage.removeItem("user");
                     history.push("/");

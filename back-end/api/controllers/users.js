@@ -217,45 +217,69 @@ exports.users_patch = (req, res, next) => {
 };
 
 exports.users_change_password = (req, res, next) => {
-  if (
-    !req.body.password.match(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
-    )
-  ) {
-    return res.status(500).json({
-      error: {
-        message:
-          "Password should be at least 8 chars and have 1 letter 1 number and 1 special char",
-      },
-    });
-  }
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      res.status(500).json({ error: err });
-    } else {
-      const id = req.params.userId;
-      User.updateOne(
-        { _id: id },
-        { $set: { password: hash, timeLastMod: Date(Date.now()).toString() } },
-        { runValidators: true }
-      )
-        .exec()
-        .then((result) => {
-          res.status(200).json({
-            message: "User password updated",
-            request: {
-              type: "GET PATCH DELETE",
-              url: "http://localhost:3001/users/" + id,
+  const id = req.params.userId;
+  User.findOne({ _id: id })
+    .exec()
+    .then((user) => {
+      if (!user) {
+        return res.status(500).json({
+          message: "User not found",
+        });
+      }
+      bcrypt.compare(req.body.oldPassword, user.password, (err, response) => {
+        if (err || !response) {
+          return res.status(401).json({
+            message: "Wrong password",
+          });
+        }
+        if (
+          !req.body.newPassword.match(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+          )
+        ) {
+          return res.status(500).json({
+            error: {
+              message:
+                "New password should be at least 8 chars and have 1 letter 1 number and 1 special char",
             },
           });
-        })
-        .catch((err) => {
-          res.status(500).json({
-            error: err,
-          });
+        }
+
+        bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
+          if (err) {
+            return res.status(500).json({ error: err });
+          } else {
+            const timeLastMod = Date(Date.now()).toString();
+            User.updateOne(
+              { _id: id },
+              { $set: { password: hash, timeLastMod } },
+              { runValidators: true }
+            )
+              .exec()
+              .then((result) => {
+                res.status(200).json({
+                  message: "User password updated",
+                  request: {
+                    type: "GET PATCH DELETE",
+                    url: "http://localhost:3001/users/" + id,
+                  },
+                  timeLastMod,
+                });
+              })
+              .catch((err) => {
+                res.status(500).json({
+                  error: err,
+                });
+              });
+          }
         });
-    }
-  });
+      });
+    })
+    .catch((err) => {
+      return res.status(401).json({
+        message: "Auth failed",
+      });
+    });
 };
 
 exports.users_delete = (req, res, next) => {
