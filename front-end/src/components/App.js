@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Switch, Route } from "react-router-dom";
-import mockData from "./common/mockData";
 import { makeStyles } from "@material-ui/core/styles";
 
 import LoginPage from "./LoginPage";
@@ -29,9 +28,53 @@ function App() {
     username: "",
   });
 
-  const [users, setUsers] = useState(mockData.users);
+  const [users, setUsers] = useState([]);
 
-  const [recipes, setRecipes] = useState(mockData.recipes);
+  const [recipes, setRecipes] = useState([]);
+
+  const localUserString = window.localStorage.getItem("user");
+
+  useEffect(() => {
+    if (localUserString) {
+      const localUser = JSON.parse(localUserString);
+      fetch("http://localhost:3001/users/" + localUser.id, {
+        method: "GET",
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          setUser({ ...result, token: localUser.token });
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setUser({ username: "" });
+    }
+  }, [localUserString]);
+
+  useEffect(() => {
+    fetch("http://localhost:3001/users", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        setUsers(result.users);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+
+    fetch("http://localhost:3001/recipes", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        setRecipes(result.recipes);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
 
   return (
     <div>
@@ -61,11 +104,7 @@ function App() {
             />
           </Route>
           <Route path="/users">
-            <UsersPage
-              userLoggedId={user.id}
-              users={users}
-              setUsers={setUsers}
-            />
+            <UsersPage user={user} users={users} setUsers={setUsers} />
           </Route>
 
           <Route path="/recipes">
@@ -73,20 +112,24 @@ function App() {
               lastRecipes={recipes
                 .slice(Math.max(recipes.length - 10, 0))
                 .reverse()
-                .map((recipe) => {
-                  return {
-                    ...recipe,
-                    creator: users.find((user) => user.id === recipe.creatorId),
-                  };
+                .flatMap((recipe) => {
+                  const creator = users.find(
+                    (user) => user.id === recipe.creatorId
+                  );
+                  return creator ? [{ ...recipe, creator }] : [];
                 })}
             />
           </Route>
-          <Route path="/recipe/:id">
-            <AddRecipePage recipes={recipes} setRecipes={setRecipes} />
+          <Route path="/recipe/:recipeId">
+            <AddRecipePage
+              userLogged={user}
+              recipes={recipes}
+              setRecipes={setRecipes}
+            />
           </Route>
           <Route path="/recipe">
             <AddRecipePage
-              userId={user.id || ""}
+              userLogged={user}
               recipes={recipes}
               setRecipes={setRecipes}
             />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -21,23 +21,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function UsersPage({ userLoggedId, users, setUsers }) {
+export default function UsersPage({ user, users, setUsers }) {
   const classes = useStyles();
   let history = useHistory();
+  const [userLogged, setUserLogged] = useState({});
+  useEffect(() => setUserLogged({ ...user }), [user]);
 
   function handleModify(userId) {
     history.push("/user/" + userId);
   }
 
   function handleDelete(id) {
-    setUsers(users.filter((user) => user.id !== id));
+    fetch("http://localhost:3001/users/" + id, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: userLogged.token,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        setUsers(users.filter((user) => user.id !== id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (
     <List dense className={classes.root}>
       {users.map((user) => {
         const labelId = user.id;
-        return userLoggedId === user.id ? (
+        return !userLogged || userLogged.id === user.id ? (
           ""
         ) : (
           <ListItem key={labelId} button>

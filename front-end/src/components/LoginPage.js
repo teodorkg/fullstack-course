@@ -68,20 +68,36 @@ const LoginPage = ({ setUser, users }) => {
   function authenticate(username, password) {
     const foundUser = users.find((user) => user.username === username);
     if (foundUser) {
-      if (foundUser.password === password) {
-        setUser({ ...foundUser });
-        return true;
-      } else {
-        setError((error) => {
-          return { ...error, loginPassword: true };
+      fetch("http://localhost:3001/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: JSON.stringify({ username, password }),
+      })
+        .then((response) => {
+          if (!response.ok) throw Error(response);
+          return response.json();
+        })
+        .then((result) => {
+          const user = { ...foundUser, token: result.token };
+          setUser(user);
+          window.localStorage.setItem("user", JSON.stringify(user));
+          history.replace("/");
+        })
+        .catch((err) => {
+          setError((error) => {
+            return { ...error, loginPassword: true };
+          });
+          return false;
         });
-        return false;
-      }
+    } else {
+      setError((error) => {
+        return { ...error, loginUsername: true };
+      });
+      return false;
     }
-    setError((error) => {
-      return { ...error, loginUsername: true };
-    });
-    return false;
   }
 
   function logIn(event) {
@@ -94,9 +110,7 @@ const LoginPage = ({ setUser, users }) => {
     });
     const u = username;
     const p = password;
-    if (isFormValid(u, p) && authenticate(u, p)) {
-      history.push("/");
-    }
+    if (isFormValid(u, p)) authenticate(u, p);
   }
 
   return (

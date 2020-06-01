@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AddRecipeMainForm from "./AddRecipeMainForm";
@@ -38,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddRecipePage({ userId, recipes, setRecipes }) {
+export default function AddRecipePage({ userLogged, recipes, setRecipes }) {
   const classes = useStyles();
-  let { id = "" } = useParams();
   let history = useHistory();
 
+  const { recipeId = "" } = useParams();
   const {
     MAX_TITLE_LEN,
     MAX_SHORT_DESCRIP_LEN,
@@ -59,7 +59,7 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     title: "",
     shortDescription: "",
     minutesNeeded: "",
-    ingredients: {},
+    ingredients: [],
     pictureSrc: "",
     description: "",
     tags: "",
@@ -67,45 +67,45 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     timeLastMod: "",
   });
 
-  if (recipeToAdd.id !== id) {
-    setRecipeToAdd(
-      id
-        ? {
+  useEffect(() => {
+    if (recipeId || !userLogged) return;
+    setRecipeToAdd((recipeToAdd) => {
+      return { ...recipeToAdd, creatorId: userLogged.id };
+    });
+  }, [userLogged, recipeId]);
+
+  useEffect(() => {
+    if (!recipeId) return;
+    fetch(`http://localhost:3001/recipes/${recipeId}`, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        setRecipeToAdd((recipeToAdd) => {
+          return {
             ...recipeToAdd,
-            ...recipes.find((recipe) => recipe.id === id),
-          }
-        : {
-            id: "",
-            creatorId: "",
-            title: "",
-            shortDescription: "",
-            minutesNeeded: "",
-            ingredients: {},
-            pictureSrc: "",
-            description: "",
-            tags: "",
-            timeCreated: "",
-            timeLastMod: "",
-          }
-    );
-  }
+            ...result,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log("No such id");
+        return false;
+      });
+  }, [recipeId]);
 
   const [errors, setErrors] = useState({
     title: false,
     shortDescription: false,
     minutesNeeded: false,
-    ingredients: {},
+    ingredients: [],
     pictureSrc: false,
     description: false,
     tags: false,
   });
-
-  function findNextIndex() {
-    const maxIndex = recipes
-      .map((recipe) => recipe.id)
-      .reduce((prevId, nextId) => (prevId < nextId ? nextId : prevId));
-    return (1 + parseInt(maxIndex)).toString();
-  }
 
   function isTitleFree() {
     return !recipes.find((recipe) => recipe.title === recipeToAdd.title);
@@ -116,7 +116,7 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
       title = "",
       shortDescription = "",
       minutesNeeded = "",
-      ingredients = {},
+      ingredients = [],
       pictureSrc = "",
       description = "",
       tags = "",
@@ -162,15 +162,16 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
       hasErrors = true;
     }
 
-    for (const ingredient in ingredients) {
+    for (let i = 0; i < ingredients.length; i += 1) {
+      const ingredient = ingredients[i];
       if (
-        ingredient.length > MAX_INGREDIENT_LEN ||
-        ingredients[ingredient].length > MAX_INGREDIENT_LEN
+        ingredient.name.length > MAX_INGREDIENT_LEN ||
+        ingredient.amount.length > MAX_INGREDIENT_LEN
       ) {
         setErrors((errors) => {
           return {
             ...errors,
-            ingredients: { ...errors.ingredients, [ingredient]: true },
+            ingredients: [...errors.ingredients, i],
           };
         });
         hasErrors = true;
@@ -180,44 +181,91 @@ export default function AddRecipePage({ userId, recipes, setRecipes }) {
     return !hasErrors;
   }
 
+  function patchRecipe() {
+    fetch(
+      `http://localhost:3001/recipes/${recipeToAdd.creatorId}/${recipeId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: userLogged.token,
+        },
+        body: JSON.stringify(recipeToAdd),
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        setRecipeToAdd({ ...recipeToAdd, timeLastMod: result.timeLastMod });
+        setRecipes((recipes) =>
+          recipes.map((recipe) => {
+            return recipe.id === recipeToAdd.id
+              ? { ...recipeToAdd, timeLastMod: result.timeLastMod }
+              : recipe;
+          })
+        );
+      })
+      .catch((err) => {
+        setErrors((errors) => {
+          return { ...errors, title: true };
+        });
+      });
+  }
+
+  function postRecipe() {
+    fetch(`http://localhost:3001/recipes/${userLogged.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: userLogged.token,
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(recipeToAdd),
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        setRecipes((recipes) => {
+          return [
+            ...recipes,
+            {
+              ...recipeToAdd,
+              id: result.id,
+              timeCreated: result.timeCreated,
+              timeLastMod: result.timeCreated,
+            },
+          ];
+        });
+        history.push("/recipes");
+      })
+      .catch((err) => {
+        setErrors((errors) => {
+          return { ...errors, title: true };
+        });
+      });
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     setErrors({
       title: false,
       shortDescription: false,
       minutesNeeded: false,
-      ingredients: false,
+      ingredients: [],
       pictureSrc: false,
       description: false,
       tags: false,
     });
     if (isFormValid()) {
-      const now = new Date();
-      const nowFormated = now.toLocaleString();
       if (recipeToAdd.id) {
-        setRecipeToAdd({ ...recipeToAdd, timeLastMod: nowFormated });
-        setRecipes((recipes) =>
-          recipes.map((recipe) => {
-            return recipe.id === recipeToAdd.id
-              ? { ...recipeToAdd, timeLastMod: nowFormated }
-              : recipe;
-          })
-        );
+        patchRecipe();
       } else {
         if (isTitleFree()) {
-          setRecipes((recipes) => {
-            return [
-              ...recipes,
-              {
-                ...recipeToAdd,
-                id: findNextIndex(),
-                creatorId: userId,
-                timeCreated: nowFormated,
-                timeLastMod: nowFormated,
-              },
-            ];
-          });
-          history.push("/recipes");
+          postRecipe();
         } else {
           setErrors((errors) => {
             return { ...errors, title: true };

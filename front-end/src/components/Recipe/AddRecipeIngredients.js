@@ -40,14 +40,14 @@ export default function AddRecipeIngredients({
   const [addIngredient, setAddIngredient] = React.useState("");
 
   function handleChange({ target }) {
-    const value = target.type === "checkbox" ? target.checked : target.value;
+    const index = parseInt(target.name);
+    const value = target.value;
     setRecipeToAdd((recipeToAdd) => {
       return {
         ...recipeToAdd,
-        ingredients: {
-          ...recipeToAdd.ingredients,
-          [target.name]: value,
-        },
+        ingredients: recipeToAdd.ingredients.map((ingredient, ind) =>
+          ind === index ? { name: ingredient.name, amount: value } : ingredient
+        ),
       };
     });
   }
@@ -55,16 +55,16 @@ export default function AddRecipeIngredients({
   return (
     <div className={classes.root}>
       <List>
-        {Object.keys(recipeToAdd.ingredients).map((ingredient, index) => {
-          const labelId = `checkbox-list-label-${ingredient}`;
+        {recipeToAdd.ingredients.map((ingredient, index) => {
+          const labelId = `checkbox-list-label-${ingredient.name}`;
 
           return (
             <ListItem key={index} role={undefined} dense button>
-              <ListItemText id={labelId} primary={ingredient} />
+              <ListItemText id={labelId} primary={ingredient.name} />
               <TextField
-                name={ingredient}
-                value={recipeToAdd.ingredients[ingredient] || ""}
-                error={errors.ingredients[ingredient]}
+                name={index.toString()}
+                value={ingredient.amount || ""}
+                error={errors.ingredients.includes(index)}
                 variant="outlined"
                 onChange={handleChange}
                 className="ingredientsInput"
@@ -76,11 +76,17 @@ export default function AddRecipeIngredients({
                   onClick={(event) => {
                     event.preventDefault();
                     setRecipeToAdd((recipeToAdd) => {
-                      let newIngredients = { ...recipeToAdd.ingredients };
-                      delete newIngredients[ingredient];
                       return {
                         ...recipeToAdd,
-                        ingredients: { ...newIngredients },
+                        ingredients: recipeToAdd.ingredients.filter(
+                          (ingredient, ind) => ind !== index
+                        ),
+                      };
+                    });
+                    setErrors((errors) => {
+                      return {
+                        ...errors,
+                        ingredients: [],
                       };
                     });
                   }}
@@ -111,10 +117,13 @@ export default function AddRecipeIngredients({
               setRecipeToAdd((recipeToAdd) => {
                 return {
                   ...recipeToAdd,
-                  ingredients: {
+                  ingredients: [
                     ...recipeToAdd.ingredients,
-                    [addIngredient]: "",
-                  },
+                    {
+                      name: addIngredient,
+                      amount: "",
+                    },
+                  ],
                 };
               });
               setAddIngredient("");

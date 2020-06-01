@@ -164,6 +164,7 @@ export default function MenuAppBar({ user, setUser }) {
                   onClick={() => {
                     handleClose();
                     setUser({ username: "" });
+                    localStorage.removeItem("user");
                     history.push("/");
                   }}
                 >

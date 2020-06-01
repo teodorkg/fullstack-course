@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -48,7 +48,6 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
 
   const {
     MAX_USERNAME_LEN,
-    MIN_PASSWORD_LEN,
     MAX_ABOUTME_LEN,
     MAX_AVATAR_SRC_LEN,
   } = userConstants;
@@ -65,26 +64,28 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     status: "",
   });
 
-  if (userToReg.id !== id) {
-    setUserToReg(
-      id
-        ? {
+  useEffect(() => {
+    if (!id) return;
+    fetch("http://localhost:3001/users/" + id, {
+      method: "GET",
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        setUserToReg((userToReg) => {
+          return {
             ...userToReg,
-            ...users.find((user) => user.id === id),
-          }
-        : {
-            id: "",
-            username: "",
-            password: "",
-            sex: "",
-            isAdmin: false,
-            nickname: "",
-            avatarSrc: "",
-            aboutme: "",
-            status: "",
-          }
-    );
-  }
+            ...result,
+          };
+        });
+      })
+      .catch((err) => {
+        console.log("No such id");
+        return false;
+      });
+  }, [id]);
 
   const [errors, setErrors] = useState({
     username: false,
@@ -95,13 +96,6 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     aboutme: false,
     status: false,
   });
-
-  function findNextIndex() {
-    const maxIndex = users
-      .map((user) => user.id)
-      .reduce((prevId, nextId) => (prevId < nextId ? nextId : prevId));
-    return (1 + parseInt(maxIndex)).toString();
-  }
 
   function isUsernameFree() {
     return !users.find((user) => user.username === userToReg.username);
@@ -125,12 +119,6 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
     ) {
       setErrors((errors) => {
         return { ...errors, username: true };
-      });
-      hasErrors = true;
-    }
-    if (password.length < MIN_PASSWORD_LEN) {
-      setErrors((errors) => {
-        return { ...errors, password: true };
       });
       hasErrors = true;
     }
@@ -164,15 +152,94 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
       });
       hasErrors = true;
     }
+    if (
+      !userToReg.id &&
+      !password.match(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+      )
+    ) {
+      setErrors((errors) => {
+        return { ...errors, password: true };
+      });
+      hasErrors = true;
+    }
 
     return !hasErrors;
+  }
+
+  function patchUser() {
+    fetch("http://localhost:3001/users/" + userToReg.id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: user.token,
+      },
+      body: JSON.stringify(userToReg),
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        if (userToReg.id === user.id) {
+          setUser({
+            ...userToReg,
+            timeLastMod: result.timeLastMod,
+            token: user.token,
+          });
+        }
+        setUserToReg({ ...userToReg, timeLastMod: result.timeLastMod });
+        setUsers(
+          users.map((user) => {
+            return user.id === userToReg.id
+              ? { ...userToReg, timeLastMod: result.timeLastMod }
+              : user;
+          })
+        );
+      })
+      .catch((err) => {
+        setErrors((errors) => {
+          return { ...errors, username: true };
+        });
+      });
+  }
+
+  function postUser() {
+    fetch("http://localhost:3001/users/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify(userToReg),
+    })
+      .then((response) => {
+        if (!response.ok) throw Error(response);
+        return response.json();
+      })
+      .then((result) => {
+        setUsers((users) => [
+          ...users,
+          {
+            ...userToReg,
+            timeCreated: result.timeCreated,
+            timeLastMod: result.timeCreated,
+            id: result.id,
+          },
+        ]);
+        history.push("/login");
+      })
+      .catch((err) => {
+        setErrors((errors) => {
+          return { ...errors, username: true };
+        });
+      });
   }
 
   function handleSubmit(event) {
     event.preventDefault();
     setErrors({
       username: false,
-      password: false,
       sex: false,
       isAdmin: false,
       avatarSrc: false,
@@ -183,31 +250,10 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
       const now = new Date();
       const nowFormated = now.toLocaleString();
       if (userToReg.id) {
-        if (userToReg.id === user.id) {
-          setUser({ ...userToReg, timeLastMod: nowFormated });
-        }
-        setUserToReg({ ...userToReg, timeLastMod: nowFormated });
-        setUsers(
-          users.map((user) => {
-            return user.id === userToReg.id
-              ? { ...userToReg, timeLastMod: nowFormated }
-              : user;
-          })
-        );
+        patchUser(nowFormated);
       } else {
         if (isUsernameFree()) {
-          setUsers((users) => {
-            return [
-              ...users,
-              {
-                ...userToReg,
-                id: findNextIndex(),
-                timeCreated: nowFormated,
-                timeLastMod: nowFormated,
-              },
-            ];
-          });
-          history.push("/login");
+          postUser(nowFormated);
         } else {
           setErrors((errors) => {
             return { ...errors, username: true };
@@ -250,21 +296,24 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
           }
           variant="outlined"
           onChange={handleChange}
+          disabled={userToReg.id ? true : false}
         />
-        <TextField
-          name="password"
-          value={userToReg.password || ""}
-          type="password"
-          error={errors.password}
-          helperText={
-            errors.password && "the password doesn't comply with the rules"
-          }
-          label="Password"
-          variant="outlined"
-          onChange={handleChange}
-          autoComplete="on"
-          className="passwordField"
-        />
+        {!userToReg.id && (
+          <TextField
+            name="password"
+            value={userToReg.password || ""}
+            type="password"
+            error={errors.password}
+            helperText={
+              errors.password && "the password doesn't comply with the rules"
+            }
+            label="Password"
+            variant="outlined"
+            onChange={handleChange}
+            autoComplete="on"
+            className="passwordField"
+          />
+        )}
         <FormControl error={errors.isAdmin}>
           <FormControlLabel
             control={

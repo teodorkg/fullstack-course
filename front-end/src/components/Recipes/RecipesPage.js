@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import RecipesCards from "./RecipesCards";
 import RecipesSearchBar from "./RecipesSearchBar";
@@ -31,7 +31,11 @@ const useStyles = makeStyles((theme) => ({
 export default function RecipesPage({ lastRecipes }) {
   const classes = useStyles();
 
-  const [recipesToShow, setRecipesToShow] = React.useState([...lastRecipes]);
+  const [recipesToShow, setRecipesToShow] = React.useState([]);
+
+  useEffect(() => {
+    setRecipesToShow(lastRecipes);
+  }, [lastRecipes]);
 
   return (
     <div className={classes.root}>

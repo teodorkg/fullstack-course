@@ -13,5 +13,5 @@ export const recipeConstants = {
   MAX_PICTURE_SRC_LEN: 256,
   MAX_TAGS_LEN: 256,
   MAX_MINUTES: 600,
-  MAX_INGREDIENT_LEN: 30,
+  MAX_INGREDIENT_LEN: 20,
 };
