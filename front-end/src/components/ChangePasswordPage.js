@@ -123,7 +123,7 @@ const ChangePasswordPage = ({ user, setUser }) => {
           value={oldPassword}
           type="password"
           error={error.oldPassword}
-          label="OldPassword"
+          label="Old password"
           helperText={error.oldPassword && "wrong old password"}
           variant="outlined"
           autoComplete="on"
@@ -134,7 +134,7 @@ const ChangePasswordPage = ({ user, setUser }) => {
           value={newPassword.original}
           type="password"
           error={error.newPasswordOriginal}
-          label="NewPassword"
+          label="New password"
           helperText={
             error.newPasswordOriginal &&
             "the new password doesn't comply with the rules"
@@ -150,7 +150,7 @@ const ChangePasswordPage = ({ user, setUser }) => {
           value={newPassword.repeat}
           type="password"
           error={error.newPasswordRepeat}
-          label="NewPassword"
+          label="New password repeat"
           helperText={error.newPasswordRepeat && "the passwords do not match"}
           variant="outlined"
           autoComplete="on"

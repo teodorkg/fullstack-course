@@ -65,26 +65,39 @@ const RegisterPage = ({ user, setUser, users, setUsers }) => {
   });
 
   useEffect(() => {
-    if (!id) return;
-    fetch("http://localhost:3001/users/" + id, {
-      method: "GET",
-    })
-      .then((response) => {
-        if (!response.ok) throw Error(response);
-        return response.json();
+    if (id) {
+      fetch("http://localhost:3001/users/" + id, {
+        method: "GET",
       })
-      .then((result) => {
-        setUserToReg((userToReg) => {
-          return {
-            ...userToReg,
-            ...result,
-          };
+        .then((response) => {
+          if (!response.ok) throw Error(response);
+          return response.json();
+        })
+        .then((result) => {
+          setUserToReg((userToReg) => {
+            return {
+              ...userToReg,
+              ...result,
+            };
+          });
+        })
+        .catch((err) => {
+          console.log("No such id");
+          return false;
         });
-      })
-      .catch((err) => {
-        console.log("No such id");
-        return false;
+    } else {
+      setUserToReg({
+        id: "",
+        username: "",
+        password: "",
+        sex: "",
+        isAdmin: false,
+        nickname: "",
+        avatarSrc: "",
+        aboutme: "",
+        status: "",
       });
+    }
   }, [id]);
 
   const [errors, setErrors] = useState({

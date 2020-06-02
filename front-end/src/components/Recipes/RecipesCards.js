@@ -19,6 +19,7 @@ import UserAvatar from "../common/UserAvatar";
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
+    backgroundColor: "#f1f1f1",
   },
   media: {
     height: 0,

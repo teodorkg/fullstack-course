@@ -70,7 +70,19 @@ export default function AddRecipePage({ userLogged, recipes, setRecipes }) {
   useEffect(() => {
     if (recipeId || !userLogged) return;
     setRecipeToAdd((recipeToAdd) => {
-      return { ...recipeToAdd, creatorId: userLogged.id };
+      return {
+        id: "",
+        creatorId: userLogged.id,
+        title: "",
+        shortDescription: "",
+        minutesNeeded: "",
+        ingredients: [],
+        pictureSrc: "",
+        description: "",
+        tags: "",
+        timeCreated: "",
+        timeLastMod: "",
+      };
     });
   }, [userLogged, recipeId]);
 
