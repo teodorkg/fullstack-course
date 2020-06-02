@@ -19,7 +19,7 @@ const userSchema = mongoose.Schema({
     default: "",
   },
   avatarSrc: String,
-  aboutme: { type: String, match: /^.{0,512}$/ },
+  aboutme: { type: String, match: /^[\s\S]{0,512}$/ },
   isAdmin: { type: Boolean, required: true, default: false },
   status: {
     type: String,
